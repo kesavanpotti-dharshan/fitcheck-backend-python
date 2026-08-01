@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="FitCheck-Resume Gap Analyzer")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://fitcheck-resume.vercel.app/"],
+    allow_origins=["https://fitcheck-resume.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
