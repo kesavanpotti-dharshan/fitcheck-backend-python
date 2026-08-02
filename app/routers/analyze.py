@@ -6,6 +6,7 @@ from app.services.gemini_client import analyze_gaps
 from app.services.text_utils import clean_jd, truncate_section
 from app.routers.resume import RESUME_STORE
 from app.utils.sanitized_route import SanitizedRoute
+from fastapi import HTTPException
 
 router = APIRouter(route_class=SanitizedRoute)
 
@@ -25,6 +26,9 @@ async def analyze_gap(payload: AnalyzeRequest):
     for section in top_sections:
         section["text"] = truncate_section(section["text"])
 
-    gaps, usage = analyze_gaps(jd_cleaned, top_sections)
+    try:
+        gaps, usage = analyze_gaps(jd_cleaned, top_sections)
+    except ValueError as e:
+        raise HTTPException(status_code=502, detail=str(e))
 
     return {"resume_id": payload.resume_id, "gaps": gaps, "usage": usage}

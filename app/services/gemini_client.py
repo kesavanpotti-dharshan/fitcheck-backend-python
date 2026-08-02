@@ -32,7 +32,7 @@ def analyze_gaps(jd_text: str, excerpts: list[dict]) -> tuple[list[dict], dict]:
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt,
-        config=types.GenerateContentConfig(max_output_tokens=4000),
+        config=types.GenerateContentConfig(max_output_tokens=8000),
     )
 
     usage = {
@@ -46,8 +46,15 @@ def analyze_gaps(jd_text: str, excerpts: list[dict]) -> tuple[list[dict], dict]:
         raw = raw.split("```")[1].replace("json", "", 1).strip()
 
     if not raw:
-        raise ValueError(
-            "Empty response from Gemini — likely hit max_output_tokens before completing JSON."
-        )
+        raise ValueError("Empty response from Gemini.")
 
-    return json.loads(raw), usage
+    try:
+        return json.loads(raw), usage
+    except json.JSONDecodeError:
+        finish_reason = (
+            response.candidates[0].finish_reason if response.candidates else None
+        )
+        raise ValueError(
+            f"Gemini response was truncated (finish_reason={finish_reason}) — "
+            f"try increasing max_output_tokens or reducing the number of JD requirements analyzed."
+        )
