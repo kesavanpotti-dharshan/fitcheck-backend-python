@@ -21,7 +21,10 @@ Return ONLY a JSON array (no markdown, no preamble) of objects with these exact 
 - requirement: a specific skill/requirement from the JD
 - match_status: one of "match", "partial", "missing"
 - evidence: quote or paraphrase from the resume excerpts supporting this, or null
-- suggestion: a specific suggestion to close the gap, or null if it's a full match
+- suggestion: a brief explanation of the gap and how to close it, or null if it's a full match. Keep under 25 words.
+- suggested_bullet: for "partial" or "missing" only — a single, ready-to-paste resume bullet point (starting with an action verb, under 20 words) that the candidate could realistically add if they have the underlying experience, phrased to match the JD's language. Null for "match".
+
+Important: suggested_bullet should only reword or reframe experience that is plausible given the existing resume content — do not invent specific metrics, technologies, or achievements not implied by the excerpts. If the gap is a genuinely missing skill with no related experience, set suggested_bullet to null and let suggestion explain what to gain the skill.
 """
 
 
